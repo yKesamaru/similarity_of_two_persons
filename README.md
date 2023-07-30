@@ -1,26 +1,22 @@
-![](img/アイキャッチ.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/アイキャッチ.png)
 紙面にはモザイク処理をかけています。
 2023年7月25日日発売の8月8日号に掲載されています。
 
-# title
-僕のアプリが週刊誌取材を受けた話と、週刊誌に載せられなかったtech系の資料
-
-1. [title](#title)
-2. [はじめに](#はじめに)
-3. [まずEfficientNetV2とはなにか](#まずefficientnetv2とはなにか)
+1. [はじめに](#はじめに)
+2. [まずEfficientNetV2とはなにか](#まずefficientnetv2とはなにか)
    1. [EfficientNetV2の仕組みと使用理由](#efficientnetv2の仕組みと使用理由)
    2. [Progressive Learningとはなにか](#progressive-learningとはなにか)
       1. [Progressive Learningの実装コード](#progressive-learningの実装コード)
-4. [Grad-CAMとはなにか](#grad-camとはなにか)
+3. [Grad-CAMとはなにか](#grad-camとはなにか)
    1. [Grad-CAMの仕組みと使用理由](#grad-camの仕組みと使用理由)
    2. [バイアスを明らかにする](#バイアスを明らかにする)
    3. [分類エラーの理由を明らかにする](#分類エラーの理由を明らかにする)
    4. [Grad-CAMの実装コード](#grad-camの実装コード)
-5. [Average face(平均顔)の作成](#average-face平均顔の作成)
+4. [Average face(平均顔)の作成](#average-face平均顔の作成)
    1. [Average faceとはなにか](#average-faceとはなにか)
    2. [平均顔作成の実装コード](#平均顔作成の実装コード)
-6. [類似度計算](#類似度計算)
-7. [あとがき](#あとがき)
+5. [類似度計算](#類似度計算)
+6. [あとがき](#あとがき)
 
 
 # はじめに
@@ -64,7 +60,7 @@ https://arxiv.org/abs/2104.00298
 > 我々の実験では、EfficientNetV2モデルは最先端のモデルよりもはるかに速く訓練され、最大で6.8倍小さくなります。
 > 我々の最良のモデルは、ImageNetで新たな最先端の91.7%のトップ1精度を達成します。"
 
-![](img/PASTE_IMAGE_2023-07-29-16-25-35.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-16-25-35.png)
 
 EfficientNetV2は、以前のモデルよりも高速なトレーニング速度と優れたパラメータ効率を持つ、新しい**畳み込みネットワーク**です。
 
@@ -96,7 +92,7 @@ EfficientNetV2は、以前のモデルよりも高速なトレーニング速度
 このように書いてあるとおり、「トレーニング中に画像サイズを動的に変更すると、精度の低下を引き起こし」ます (Howard, 2018; Hoffer et al., 2019)。
 
 著者らはこの原因を「不均衡な正則化」にあるとしています。これを実際にあれやこれやと試したのが論文のFig.5です。
-![](img/PASTE_IMAGE_2023-07-29-17-07-39.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-17-07-39.png)
 この表をじっと見つめると、対角線上に良い結果が並んでいるのが分かりますね。つまり、入力される画像解像度に応じてRandAugの値を調節するのがよさそうなのが分かります。
 
 > 論文より翻訳：
@@ -105,7 +101,7 @@ EfficientNetV2は、以前のモデルよりも高速なトレーニング速度
 > 次に、画像サイズを徐々に大きくしますが、より強力な正則化を追加することで学習をより困難にします。
 > 私たちのアプローチは、画像サイズを徐々に変更する(Howard, 2018)に基づいていますが、ここでは正則化も適応的に調整します。
 
-![](img/PASTE_IMAGE_2023-07-29-16-59-07.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-16-59-07.png)
 
 論文でのこの`Progressive Learning with adaptive Regularization`を実装に落とし込むため、学習ループは以下のように工夫しました。
 
@@ -206,7 +202,7 @@ Grad-CAMは、ネットワークの最後の畳み込み層の特徴マップに
 このCAMは、ネットワークが特定のクラスを予測する際に、どの部分（またはどのニューロン）が重要であるかを視覚的に示します。要するに、CNNが特定のクラスを予測するために「注視」している画像の領域がどの領域なのかを視覚化してくれます。
 
 ## バイアスを明らかにする
-![](img/PASTE_IMAGE_2023-07-28-21-31-31.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-28-21-31-31.png)
 
 この論文では、医師と看護師を識別するための実験が行われています。
 論文中で、モデルは女性の医師を看護師と誤分類し、男性の看護師を医師と誤分類していました。これは、**データセットに性別によるバイアスが存在したため**で、実際、データセットの医師の画像の78%が男性で、看護師の画像の93%が女性だったとのことです。
@@ -214,23 +210,23 @@ Grad-CAMを使用した結果、「モデルが人の顔や髪型を見て、看
 
 この結果に鑑み、訓練セットのバイアスを減らすために、男性の看護師と女性の医師の画像を追加し、クラスごとの画像の数を維持した結果、再訓練されたモデルはより良く一般化されテスト精度が90%に向上しました。また、適切な領域を見ていることも確認されました（上図の右端の列）。
 
-![](img/PASTE_IMAGE_2023-07-28-21-30-04.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-28-21-30-04.png)
 この実験は、Grad-CAMが**データセットのバイアスを検出し、除去するのに役立つ**こと、そしてそれがより良い一般化だけでなく、一般社会で認知バイアスが大きいほど、公正で倫理的な結果になるように調整しなくてはいけない事実を示す証拠となってます。
 
 ## 分類エラーの理由を明らかにする
 論文中の図9の(d)では、ロッカーに貼られている紙にニューロンが反応して、エレベーターと誤分類しています。この誤分類の理由を調べるために、Grad-CAMを使ってモデルがどの領域に注目しているのかを可視化しています。このように、Grad-CAMは**モデルが誤分類する理由を明らかにする**ことができます。
 
-![](img/PASTE_IMAGE_2023-07-28-21-32-53.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-28-21-32-53.png)
 
 
 さて、このGrad-CAMを使って、お二人の顔画像のどの部分にAIが注目しているのかを可視化してみましょう。
 
 
-![](img/GradCAM_eguchi.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/GradCAM_eguchi.png)
 
 こちらは江口洋介さんの顔画像ですが、モデルは目尻から鼻筋にかけて注視しているのがみてとれます。
 
-![](img/GradCAM_hokuto.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/GradCAM_hokuto.png)
 
 そしてこちらが植松北斗さんの顔画像です。口元から鼻筋にかけて注視しているのがみてとれます。
 
@@ -241,12 +237,12 @@ Grad-CAMを使用した結果、「モデルが人の顔や髪型を見て、看
 垂直線、水平線、斜線に選択的に反応するニューロンが視覚情報を処理し、視覚世界の知覚に寄与する複雑な細胞のネットワークを形成しています。
 
 人工知能研究のための視覚情報処理
-![](img/PASTE_IMAGE_2023-07-29-18-13-55.png)
-![](img/PASTE_IMAGE_2023-07-29-18-18-00.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-18-13-55.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-18-18-00.png)
 https://www.slideshare.net/KokiNakamura/ss-50460481
 
 少し古いですが分かりやすいサーベイがこちらです。
-![](img/PASTE_IMAGE_2023-07-29-18-15-15.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-18-15-15.png)
 視覚とパターン認識
 https://annex.jsap.or.jp/photonics/kogaku/public/17-02-kaisetsu1.pdf
 
@@ -356,13 +352,13 @@ plt.show()
 「平均顔」または「Average face」は、一連の顔画像の平均を取ることで生成される顔のイメージです。これは、一般的には、特定の集団（例えば、特定の国や地域の人々、特定の年齢層、特定の性別など）の「典型的な」顔を表現するために、主に心理学の分野で使用されます。
 例えば、顔の美しさや魅力、様々な顔に対する人間の反応に関する研究でよく使われています。
 
-![](img/PASTE_IMAGE_2023-07-29-15-37-29.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-15-37-29.png)
 
 > 操作性を考慮した顔画像合成システム： FUTON—— 顔認知研究のツールとしての評価 ——
 > 
 > https://search.ieice.org/data/d_data/j85-a_10_1126/10a_9.pdf
 > 
-> ![](img/PASTE_IMAGE_2023-07-29-15-38-34.png)
+> ![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-15-38-34.png)
 >
 
 今回の記事では、「補足」という意味で、平均顔を作成してみました。
@@ -379,7 +375,7 @@ plt.show()
 
 **もし、ありふれた芸能人の平均顔と、お二人から作られた平均顔の「感覚的な距離が遠い」場合、お二人を互いに「似ている」と感じることに不思議ではないでしょう。**
 
-![](img/PASTE_IMAGE_2023-07-29-22-30-09.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-22-30-09.png)
 
 これは補助的な資料であり、感覚的な部分が大きいので、あまり科学的なものではありません。しかし、**ふたつの平均顔は、それぞれ違うカテゴリにありそう**なことは理解して頂けるのではないでしょうか。
 
@@ -479,8 +475,8 @@ CONFIG: Dict =  Initialize('EFFICIENTNETV2_ARCFACE_MODEL', 'info')._configure()
 logger = Logger(CONFIG['log_level']).logger(__file__, CONFIG['RootDir'])
 
 face_path_list =[
-    'example/img/麻生太郎_default.png',
-    'example/img/安倍晋三_default.png'
+    'example/https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/麻生太郎_default.png',
+    'example/https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/安倍晋三_default.png'
     ]
 
 encoding_list = []
@@ -504,7 +500,7 @@ percentage = api_obj.percentage(cos_sim)
 print(percentage)
 ```
 
-![](img/PASTE_IMAGE_2023-07-29-22-45-28.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-22-45-28.png)
 
 このコードでは麻生さんと安倍さんの顔画像の類似度を計算しています。
 
@@ -517,14 +513,14 @@ Copyright Owner: Yoshitsugu Kesamaru
 
 結果は79.89%となりました。
 
-![](img/text980.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/text980.png)
 
 この結果は、麻生さんと安倍さんの顔画像は同一人物ではないということを意味します。
 
 次にお二人です。
 X（旧twitter）にてお写真を出されて比較されてた方がいらっしゃったので、引用させて頂きます。
 
-![](img/PASTE_IMAGE_2023-07-29-22-48-37.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-22-48-37.png)
 
 さて、私がネットを見て回った中では、この写真がもっともお二人の年齢が近そうに感じました。
 
@@ -617,7 +613,7 @@ if __name__ == '__main__':
 
 アライメントの結果、このように顔画像が出力されました。
 
-![](img/PASTE_IMAGE_2023-07-29-23-18-54.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-23-18-54.png)
 
 このお二人の写真を、先程の類似度計算コードに入力します。
 
@@ -631,11 +627,11 @@ Copyright Owner: Yoshitsugu Kesamaru
 
 `85.74%`となりました。90%以上が本人と認識されますので、別人と認識されたとはいえ、かなり似ているということがわかります。
 
-![](img/text962.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/text962.png)
 
 参考資料として、姉妹であられる浅田舞さんと浅田真央さんの顔画像を入力して見ましょう。
 
-![](img/PASTE_IMAGE_2023-07-29-23-24-14.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/PASTE_IMAGE_2023-07-29-23-24-14.png)
 
 以下が出力結果です。
 `83.06%`となりました。
@@ -645,7 +641,7 @@ Copyright Owner: Yoshitsugu Kesamaru
 83.06
 ```
 
-![](img/text931.png)
+![](https://raw.githubusercontent.com/yKesamaru/similarity_of_two_persons/master/img/text931.png)
 
 こちらは姉妹ですが、江口さん-植松さんの組み合わせより、**2.64ポイントも低くなりました**。
 
@@ -653,3 +649,10 @@ Copyright Owner: Yoshitsugu Kesamaru
 
 
 # あとがき
+ということで、紙面に載せられなかった「技術的な話」はこれでおわりです。あぁ、すっきりした。
+
+やっぱり技術的な話をするなら「細部まで」語りたいですよね。紙面では、担当の方に無理言って、「Grad-CAM」の名称だけは入れて下さい…！とお願いしました。だって手法を書かないと、それが「主観的な感想」なのかどうか分からないじゃないですか。
+
+それ以外の部分も、出力された図や出典を盛り込みたかったのですが、限られたスペース（1ページ）をいかに読者目線で使うか、というのが担当された編集者様からビンビン伝わってきて、本当に頭の下がる思いでした。この場を借りて、お礼申し上げます。
+
+最後までお読みいただいた方、ありがとうございました。よかったら書店で手にとって見てくださいね。
